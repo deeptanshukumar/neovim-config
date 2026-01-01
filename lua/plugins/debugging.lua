@@ -1,27 +1,27 @@
 return {
     "mfussenegger/nvim-dap",
-    --go to this github url and :help-txt for more keybinding options--
     dependencies = {
         "rcarriga/nvim-dap-ui",
-        --add more dependencies for the languages here--
-        --follow this wiki for installing desired languages--
-        --github.com/mfussenegger/nvim-dap/wiki/degub-adapter-installation
+        "nvim-neotest/nvim-nio", -- REQUIRED for nvim-dap-ui in 2026
     },
     config = function()
         local dap, dapui = require("dap"), require("dapui")
-        dap.listeners.before.attach.dapui_config = function()
-            dapui.open()
-        end
-        dap.listeners.before.launch.dapui_config = function()
-            dapui.open()
-        end
-        dap.listeners.before.event_terminated.dapui_config = function()
-            dapui.close()
-        end
-        dap.listeners.before.event_exited.dapui_config = function()
-            dapui.close()
-        end
-        vim.keymap.set("n", "<Leader>db", dap.toggle_breakpoint(), {})
-        vim.keymap.set("n", "<Leader>dc", dap.continue(), {})
+        
+        -- Corrected: Setup nvim-dap-ui
+        dapui.setup() 
+
+        dap.listeners.before.attach.dapui_config = function() dapui.open() end
+        dap.listeners.before.launch.dapui_config = function() dapui.open() end
+        dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+        dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+
+        -- FIX: Remove () from toggle_breakpoint
+        vim.keymap.set("n", "<Leader>db", dap.toggle_breakpoint, {}) 
+        vim.keymap.set("n", "<Leader>dc", function() dap.continue() end, {})
     end,
 }
+
+
+
+
+
